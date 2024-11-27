@@ -1,6 +1,10 @@
 extends CharacterBody2D
 class_name Player
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(name.to_int())
+	pass
+
 
 func _ready():
 	var viewport_rect = get_viewport_rect()
@@ -19,28 +23,39 @@ func _ready():
 @export var max_hp:int = 100
 @export var hp:int = 100
 
+@rpc("authority","call_local")
 func PL_MOVE():
-	if(not GM.last_func_time.has("PL_MOVE")):
-		GM.last_func_time["PL_MOVE"]=0
-	elif(GM.game_time-GM.last_func_time["PL_MOVE"]>=player_move_gap_duration):
-		GM.last_func_time["PL_MOVE"] = GM.game_time
+	var PLMOVE_ID = "PL_MOVE"+str(multiplayer.get_unique_id())
+	
+	if(not GM.last_func_time.has(PLMOVE_ID)):
+		GM.last_func_time[PLMOVE_ID]=0
+		
+	elif(GM.game_time-GM.last_func_time[PLMOVE_ID]>=player_move_gap_duration):
+		GM.last_func_time[PLMOVE_ID] = GM.game_time
 		ani.rotation_degrees += 1
+		print(ani,ani.rotation_degrees)
 	pass
+	
+
 func attribute_ui_refresh():
 	hp_bar.value = hp
 	hp_bar.max_value = max_hp
 	pass
 	
 func _process(_delta):
-	PL_MOVE()
-	shooter_check()
+	PL_MOVE.rpc()
 	attribute_ui_refresh()
+	if not is_multiplayer_authority():
+		return
+	shooter_check()
 	pass
-	
+
 @onready var shooter: Line2D = %Shooter
 var is_mouse_in:bool =false
 var is_mouse_triggered:bool = false
 func _input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and is_mouse_in:
 			is_mouse_triggered = true
@@ -48,6 +63,17 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and !event.is_pressed() and !is_mouse_in:
 			is_mouse_triggered = false
 	pass
+func _on_area_2_check_mouse_entered() -> void:
+	if not is_multiplayer_authority():
+		return
+	is_mouse_in = true
+	pass # Replace with function body.
+func _on_area_2_check_mouse_exited() -> void:
+	if not is_multiplayer_authority():
+		return
+	is_mouse_in = false
+	pass # Replace with function body.
+	
 func shooter_shoot(): 
 	var pvlen = player.velocity.length()
 	if(shooter.points.size()>=2):
@@ -104,9 +130,3 @@ func shooter_check():
 		else:
 			shooter_run()
 	pass
-func _on_area_2_check_mouse_entered() -> void:
-	is_mouse_in = true
-	pass # Replace with function body.
-func _on_area_2_check_mouse_exited() -> void:
-	is_mouse_in = false
-	pass # Replace with function body.

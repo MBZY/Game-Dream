@@ -2,6 +2,9 @@ extends Node
 class_name GMC
 
 var as_server:bool = false
+var as_server_port:int = 7788
+var obj_server_ip:String = "127.0.0.1"
+var obj_server_port:int = 7788
 
 var current_scene = null  #当前场景
 func _ready() -> void:
@@ -23,7 +26,7 @@ func _deferred_switch_scene(res_path):
 	pass
 
 var last_func_time:Dictionary
-var game_time:int = 0
+@export var game_time:int = 0
 func _on_timer_timeout() -> void:
 	game_time += 1
 	pass # Replace with function body.

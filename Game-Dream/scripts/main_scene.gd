@@ -20,9 +20,15 @@ func add_player(id:int):
 	players.add_child(player)
 	pass
 func _on_peer_connected(id:int):
-	
+	print("有玩家链接",id)
+	add_player(id)
 	pass
 
+func init_client():
+	peer.create_client(GM.obj_server_ip,GM.obj_server_port)
+	multiplayer.multiplayer_peer = peer
+	
+	pass
 
 
 @onready var bg: TextureRect = %BG
@@ -34,6 +40,8 @@ func _ready():
 	bg.pivot_offset = bg.size/2
 	if(GM.as_server):
 		init_server()
+	else:
+		init_client()
 	pass
 	
 @export var bg_move_gap_duration:int = 1

@@ -45,15 +45,60 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 text = "开始游戏"
 
+[node name="StartSub" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="StartPort" type="LineEdit" parent="MarginContainer/VBoxContainer/StartSub"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "端口"
+
+[node name="StartConfirm" type="Button" parent="MarginContainer/VBoxContainer/StartSub"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "确定"
+
 [node name="JoinButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "加入游戏"
+
+[node name="JoinSub" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="JoinIP" type="LineEdit" parent="MarginContainer/VBoxContainer/JoinSub"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IP"
+
+[node name="JoinPort" type="LineEdit" parent="MarginContainer/VBoxContainer/JoinSub"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+text = "端口"
+
+[node name="JoinConfirm" type="Button" parent="MarginContainer/VBoxContainer/JoinSub"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "确定"
 
 [node name="HelpButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -62,3 +107,6 @@ size_flags_vertical = 4
 text = "操作提示"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/StartSub/StartConfirm" to="." method="_on_start_confirm_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/JoinSub/JoinConfirm" to="." method="_on_join_confirm_pressed"]
