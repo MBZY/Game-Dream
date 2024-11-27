@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbppnbbujs6ts"]
+
+[ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_88yvw"]
+[ext_resource type="Texture2D" uid="uid://bv6ue5tqwa5bq" path="res://resources/Tile.png" id="1_ikaw3"]
+
+[node name="MainScene" type="Node2D"]
+script = ExtResource("1_88yvw")
+
+[node name="BG" type="TextureRect" parent="."]
+unique_name_in_owner = true
+offset_right = 648.0
+offset_bottom = 648.0
+texture = ExtResource("1_ikaw3")
+
+[node name="Players" type="Node" parent="."]
