@@ -8,6 +8,40 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_8nmhw"]
 radius = 25.02
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_vn8p0"]
+radius = 40.0125
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kr1fb"]
+bg_color = Color(0, 0.675293, 0.760387, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8swm"]
+bg_color = Color(0.788134, 3.36915e-06, 0.478981, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 12
+
+[sub_resource type="Gradient" id="Gradient_458o3"]
+offsets = PackedFloat32Array(0, 0.758333)
+colors = PackedColorArray(1, 1, 1, 1, 0.498273, 4.01892e-06, 0.22961, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_16ad3"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Graphic:scale")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:hp")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_4trxe"]
 atlas = ExtResource("2_udpjo")
 region = Rect2(0, 0, 512, 512)
@@ -47,34 +81,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_vn8p0"]
-radius = 25.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kr1fb"]
-bg_color = Color(0, 0.675293, 0.760387, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8swm"]
-bg_color = Color(0.788134, 3.36915e-06, 0.478981, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 12
-
-[sub_resource type="Gradient" id="Gradient_458o3"]
-offsets = PackedFloat32Array(0, 0.758333)
-colors = PackedColorArray(1, 1, 1, 1, 0.498273, 4.01892e-06, 0.22961, 1)
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_16ad3"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(187, 79)
 motion_mode = 1
@@ -84,12 +90,7 @@ metadata/_edit_group_ = true
 [node name="BeChecked" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_8nmhw")
 
-[node name="Ani" type="AnimatedSprite2D" parent="."]
-unique_name_in_owner = true
-scale = Vector2(0.1, 0.1)
-sprite_frames = SubResource("SpriteFrames_p6wx0")
-
-[node name="Area2Check" type="Area2D" parent="."]
+[node name="Area2Check" type="Area2D" parent="." groups=["Colli"]]
 
 [node name="ToCheck" type="CollisionShape2D" parent="Area2Check"]
 shape = SubResource("CircleShape2D_vn8p0")
@@ -121,5 +122,14 @@ round_precision = 12
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_16ad3")
 
+[node name="Graphic" type="Node2D" parent="."]
+
+[node name="Ani" type="AnimatedSprite2D" parent="Graphic"]
+unique_name_in_owner = true
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_p6wx0")
+
+[connection signal="hit_face" from="." to="." method="_on_hit_face"]
+[connection signal="area_entered" from="Area2Check" to="." method="_on_area_2_check_area_entered"]
 [connection signal="mouse_entered" from="Area2Check" to="." method="_on_area_2_check_mouse_entered"]
 [connection signal="mouse_exited" from="Area2Check" to="." method="_on_area_2_check_mouse_exited"]

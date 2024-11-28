@@ -5,11 +5,13 @@ var as_server:bool = false
 var as_server_port:int = 7788
 var obj_server_ip:String = "127.0.0.1"
 var obj_server_port:int = 7788
+@onready var timer: Timer = %Timer
 
 var current_scene = null  #当前场景
 func _ready() -> void:
 	var root = get_tree().root #获取根节点
 	current_scene = root.get_child(root.get_child_count() - 1) #设置当前场景
+	timer.wait_time = tick_time
 
 #场景切换函数,第一个参数表示切换到对应场景的路径，参数二表示人公出现的位置
 func switch_scene(res_path):
@@ -27,6 +29,7 @@ func _deferred_switch_scene(res_path):
 
 var last_func_time:Dictionary
 @export var game_time:int = 0
+@export var tick_time:float = 0.05
 func _on_timer_timeout() -> void:
 	game_time += 1
 	pass # Replace with function body.

@@ -6,6 +6,7 @@
 script = ExtResource("1_hjqj6")
 
 [node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
 wait_time = 0.05
 autostart = true
 
