@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1ex55augmi77"]
+
+[ext_resource type="Script" path="res://scripts/wall.gd" id="1_6ge76"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_nbeih"]
+
+[node name="Wall" type="CharacterBody2D"]
+script = ExtResource("1_6ge76")
+
+[node name="Colli" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+shape = SubResource("SegmentShape2D_nbeih")
+
+[node name="Shape" type="Line2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Area2D" type="Area2D" parent="." groups=["ColliWall"]]
+
+[node name="Colli2" type="CollisionShape2D" parent="Area2D"]
+unique_name_in_owner = true
+shape = SubResource("SegmentShape2D_nbeih")

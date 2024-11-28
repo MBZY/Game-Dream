@@ -11,22 +11,6 @@ radius = 25.02
 [sub_resource type="CircleShape2D" id="CircleShape2D_vn8p0"]
 radius = 40.0125
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kr1fb"]
-bg_color = Color(0, 0.675293, 0.760387, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8swm"]
-bg_color = Color(0.788134, 3.36915e-06, 0.478981, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-corner_detail = 12
-
 [sub_resource type="Gradient" id="Gradient_458o3"]
 offsets = PackedFloat32Array(0, 0.758333)
 colors = PackedColorArray(1, 1, 1, 1, 0.498273, 4.01892e-06, 0.22961, 1)
@@ -84,10 +68,38 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kr1fb"]
+bg_color = Color(0, 0.675293, 0.760387, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8swm"]
+bg_color = Color(0.788134, 3.36915e-06, 0.478981, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 12
+
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(187, 79)
 motion_mode = 1
 script = ExtResource("1_a0stm")
+player_move_gap_duration = null
+player_rebound_gap_duration = null
+player_rebound_re_gap_duration = null
+shooter_max_speed = null
+shooter_max_length = null
+shooter_speed = null
+shooter_speed_common_reduction = null
+max_hp = null
+hp = null
+now_velocity = null
+wall_CD = null
+injure_CD = null
 metadata/_edit_group_ = true
 
 [node name="BeChecked" type="CollisionShape2D" parent="."]
@@ -97,21 +109,6 @@ shape = SubResource("CircleShape2D_8nmhw")
 
 [node name="ToCheck" type="CollisionShape2D" parent="Area2Check"]
 shape = SubResource("CircleShape2D_vn8p0")
-
-[node name="Hp_Bar" type="ProgressBar" parent="."]
-unique_name_in_owner = true
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -30.0
-offset_top = -33.0
-offset_right = 33.0
-offset_bottom = -26.0
-grow_horizontal = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_kr1fb")
-theme_override_styles/fill = SubResource("StyleBoxFlat_s8swm")
-value = 50.0
-show_percentage = false
 
 [node name="Shooter" type="Line2D" parent="."]
 unique_name_in_owner = true
@@ -132,7 +129,43 @@ unique_name_in_owner = true
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_p6wx0")
 
+[node name="Hp_Bar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -30.0
+offset_top = -33.0
+offset_right = 33.0
+offset_bottom = -26.0
+grow_horizontal = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_kr1fb")
+theme_override_styles/fill = SubResource("StyleBoxFlat_s8swm")
+value = 50.0
+show_percentage = false
+
+[node name="Wall" type="Label" parent="Hp_Bar"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 23.0
+text = "W"
+metadata/_edit_use_anchors_ = true
+
+[node name="Injure" type="Label" parent="Hp_Bar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+text = "I "
+horizontal_alignment = 2
+
 [connection signal="hit_face" from="." to="." method="_on_hit_face"]
 [connection signal="area_entered" from="Area2Check" to="." method="_on_area_2_check_area_entered"]
+[connection signal="body_entered" from="Area2Check" to="." method="_on_area_2_check_body_entered"]
 [connection signal="mouse_entered" from="Area2Check" to="." method="_on_area_2_check_mouse_entered"]
 [connection signal="mouse_exited" from="Area2Check" to="." method="_on_area_2_check_mouse_exited"]

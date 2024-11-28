@@ -10,7 +10,7 @@ signal hit_face
 func _ready():
 	var viewport_rect = get_viewport_rect()
 	global_position = Vector2(randf_range(0,viewport_rect.size.x),randf_range(0,viewport_rect.size.y))
-	print(self)
+	
 	pass
 	
 @onready var ani: AnimatedSprite2D = %Ani
@@ -28,6 +28,9 @@ func _ready():
 @export var max_hp:int = 100
 @export var hp:int = 100
 @export var now_velocity:Vector2 = Vector2.ZERO
+@export var wall_CD:int = 1000
+@export var injure_CD:int = 1000
+var current_scene:MSC
 
 func PL_MOVE():
 	var PLMOVE_ID = "PL_MOVE"+str(name.to_int())
@@ -46,19 +49,22 @@ func attribute_ui_refresh():
 	pass
 
 var f:bool = false
-func _process(_delta):
+func _process(delta: float) -> void:
+	current_scene = get_tree().current_scene
 	PL_MOVE()
 	attribute_ui_refresh()
 	shooter_check()
 	#if(GM.as_server):
+	wall_put_down_check()
 	velocity = now_velocity
-		
 	move_and_slide()
 	pass
 
 @onready var shooter: Line2D = %Shooter
+
 var is_mouse_in:bool =false
 var is_mouse_triggered:bool = false
+var mouse_wall_down:bool = false
 func _input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
@@ -68,7 +74,32 @@ func _input(event: InputEvent) -> void:
 			#print(1)
 		if event.button_index == MOUSE_BUTTON_LEFT and !event.is_pressed() and !is_mouse_in:
 			is_mouse_triggered = false
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+			mouse_wall_down = true
+		if event.button_index == MOUSE_BUTTON_RIGHT and !event.is_pressed():
+			mouse_wall_down = false
+			
 	pass
+
+var wall_temp
+func confirm_first_point(pos:Vector2):
+	wall_temp = GM.WALL.instantiate()
+	wall_temp.first_point = pos
+	current_scene.add_wall(name.to_int(),wall_temp)
+	pass
+
+var first_point_confirm:bool = false
+func wall_put_down_check() -> void:
+	if(mouse_wall_down and not first_point_confirm):
+		first_point_confirm = true
+		confirm_first_point(get_global_mouse_position())
+		wall_temp.last_point = get_global_mouse_position()
+	if(mouse_wall_down and first_point_confirm):
+		wall_temp.last_point = get_global_mouse_position()
+	if(not mouse_wall_down and first_point_confirm):
+		first_point_confirm = false
+	pass # Replace with function body.	
+
 func _on_area_2_check_mouse_entered() -> void:
 	if not is_multiplayer_authority():
 		return
@@ -164,7 +195,13 @@ func a2c_do(area:Area2D):
 				body.now_velocity+=now_velocity
 				print(body.now_velocity)
 				now_velocity = temp - now_velocity
+	
 	pass
+func _on_area_2_check_body_entered(body: Node2D) -> void:
+	if(is_multiplayer_authority() and body is Wall):
+		
+	pass # Replace with function body.
+	
 func _on_area_2_check_area_entered(area: Area2D) -> void:
 	if(is_multiplayer_authority()):
 		a2c_do(area)

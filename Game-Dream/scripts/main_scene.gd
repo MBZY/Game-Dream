@@ -1,8 +1,10 @@
 extends Node2D
-
-
+class_name MSC
+const WALL = preload("res://scenes/wall.tscn")
 const PLAYER = preload("res://scenes/player.tscn")
 @onready var players: Node = $Players
+@onready var walls: Node = %Walls
+@onready var injures: Node = %Injures
 
 var peer:ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 func init_server():
@@ -18,6 +20,13 @@ func add_player(id:int):
 	var player = PLAYER.instantiate()
 	player.name = str(id)
 	players.add_child(player)
+	pass
+	
+var wall_count:int = 0
+func add_wall(id:int,wall_obj:Wall):
+	wall_obj.name = str(id) + str(wall_count)
+	walls.add_child(wall_obj)
+	wall_count+=1
 	pass
 func _on_peer_connected(id:int):
 	print("有玩家链接",id)

@@ -6,6 +6,8 @@ var as_server_port:int = 7788
 var obj_server_ip:String = "127.0.0.1"
 var obj_server_port:int = 7788
 @onready var timer: Timer = %Timer
+const WALL = preload("res://scenes/wall.tscn")
+const PLAYER = preload("res://scenes/player.tscn")
 
 var current_scene = null  #当前场景
 func _ready() -> void:

@@ -13,10 +13,13 @@ offset_bottom = 648.0
 texture = ExtResource("1_ikaw3")
 
 [node name="Players" type="Node" parent="."]
+unique_name_in_owner = true
 
 [node name="Walls" type="Node" parent="."]
+unique_name_in_owner = true
 
 [node name="Injures" type="Node" parent="."]
+unique_name_in_owner = true
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
