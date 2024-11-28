@@ -50,13 +50,10 @@ func _process(_delta):
 	PL_MOVE()
 	attribute_ui_refresh()
 	shooter_check()
-	rebound_grid_refresh()
-	if(is_multiplayer_authority()):
-		velocity = now_velocity
-		if(f):
-			print(velocity)
-			f=false
-		move_and_slide()
+	#if(GM.as_server):
+	velocity = now_velocity
+		
+	move_and_slide()
 	pass
 
 @onready var shooter: Line2D = %Shooter
@@ -142,38 +139,31 @@ func shooter_check():
 
 var is_rebound_grid:Dictionary
 
-func rebound_grid_refresh():
-	var REBOUND_RE_ID = "REBOUND_RE"+str(name.to_int())
-	if(not GM.last_func_time.has(REBOUND_RE_ID)):
-		GM.last_func_time[REBOUND_RE_ID]=0
-	elif(GM.game_time-GM.last_func_time[REBOUND_RE_ID]>=player_rebound_re_gap_duration):
-		is_rebound_grid = {}
-	pass
-
 func a2c_do(area:Area2D):
 	if is_multiplayer_authority() and area.is_in_group("Colli"):
 		var REBOUND_ID = "REBOUND"+str(name.to_int())
 		
-		var body = area.get_parent()
+		var body:Player = area.get_parent()
 		
 		if(not GM.last_func_time.has(REBOUND_ID)):
 			GM.last_func_time[REBOUND_ID]=0
 		elif(GM.game_time-GM.last_func_time[REBOUND_ID]>=player_rebound_gap_duration):
 			if(is_rebound_grid.has(name) and is_rebound_grid[name] == body.name):
+				is_rebound_grid.erase(name)
+				is_rebound_grid.erase(body.name)
 				return;
-			print(REBOUND_ID)
 			is_rebound_grid[name] = body.name
 			is_rebound_grid[body.name] = name
+			
+			print(self)
 			
 			GM.last_func_time[REBOUND_ID] = GM.game_time
 			hit_face.emit()
 			if(shooter_max_speed>=body.now_velocity.length() and shooter_max_speed>=now_velocity.length()):
 				var temp = body.now_velocity
-				body.plus_now_velocity(now_velocity)
-				now_velocity = temp-now_velocity
-	pass
-func plus_now_velocity(v:Vector2):
-	now_velocity+=v
+				body.now_velocity+=now_velocity
+				print(body.now_velocity)
+				now_velocity = temp - now_velocity
 	pass
 func _on_area_2_check_area_entered(area: Area2D) -> void:
 	if(is_multiplayer_authority()):
