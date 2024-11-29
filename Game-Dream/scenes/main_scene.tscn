@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbppnbbujs6ts"]
+[gd_scene load_steps=4 format=3 uid="uid://bbppnbbujs6ts"]
 
 [ext_resource type="Script" path="res://scripts/main_scene.gd" id="1_88yvw"]
 [ext_resource type="Texture2D" uid="uid://bv6ue5tqwa5bq" path="res://resources/Tile.png" id="1_ikaw3"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7rbya"]
 
 [node name="MainScene" type="Node2D"]
 script = ExtResource("1_88yvw")
@@ -26,9 +28,12 @@ _spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
 spawn_path = NodePath("../Players")
 
 [node name="MultiplayerSpawner2" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/wall.tscn")
 spawn_path = NodePath("../Walls")
 
 [node name="MultiplayerSpawner3" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
 spawn_path = NodePath("../Injures")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_7rbya")

@@ -1,10 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1ex55augmi77"]
+[gd_scene load_steps=4 format=3 uid="uid://c1ex55augmi77"]
 
 [ext_resource type="Script" path="res://scripts/wall.gd" id="1_6ge76"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_nbeih"]
 
-[node name="Wall" type="CharacterBody2D"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j2ulf"]
+properties/0/path = NodePath(".:first_point")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:last_point")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:be_stastic")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Wall" type="CharacterBody2D" groups=["Walls"]]
 script = ExtResource("1_6ge76")
 
 [node name="Colli" type="CollisionShape2D" parent="."]
@@ -19,3 +30,6 @@ unique_name_in_owner = true
 [node name="Colli2" type="CollisionShape2D" parent="Area2D"]
 unique_name_in_owner = true
 shape = SubResource("SegmentShape2D_nbeih")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_j2ulf")

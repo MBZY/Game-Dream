@@ -20,17 +20,23 @@ func add_player(id:int):
 	var player = PLAYER.instantiate()
 	player.name = str(id)
 	players.add_child(player)
+	wall_count[str(id)]=0
 	pass
 	
-var wall_count:int = 0
+@export var wall_count:Dictionary
 func add_wall(id:int,wall_obj:Wall):
-	wall_obj.name = str(id) + str(wall_count)
+	print(self,wall_count)
+	if(not wall_count.has(str(id))):
+		wall_count[str(id)] = 0
+	wall_obj.name = str(id) + str(wall_count[str(id)])
 	walls.add_child(wall_obj)
-	wall_count+=1
+	wall_count[str(id)]+=1
 	pass
+
 func _on_peer_connected(id:int):
 	print("有玩家链接",id)
 	add_player(id)
+	
 	pass
 
 func init_client():

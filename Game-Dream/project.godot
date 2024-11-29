@@ -23,3 +23,7 @@ GM="*res://scenes/game_manager.tscn"
 
 window/size/viewport_width=648
 window/stretch/mode="canvas_items"
+
+[global_group]
+
+ColliWall=""

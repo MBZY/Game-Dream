@@ -21,6 +21,7 @@ func _ready():
 @export var player_move_gap_duration:int = 1
 @export var player_rebound_gap_duration:int = 5
 @export var player_rebound_re_gap_duration:int = 5
+@export var player_collide_gap_duration:int = 3
 @export var shooter_max_speed:int = 1000
 @export var shooter_max_length:int = 100
 @export var shooter_speed:int = 800
@@ -56,9 +57,31 @@ func _process(delta: float) -> void:
 	shooter_check()
 	#if(GM.as_server):
 	wall_put_down_check()
+	collide_check()
 	velocity = now_velocity
 	move_and_slide()
+	if(GM.as_server):
+		if(wall_refresh):
+			wall_temp = GM.WALL.instantiate()
+			current_scene.add_wall(name.to_int(),wall_temp)
+			wall_refresh = false
 	pass
+
+
+func collide_check():
+	if(self.is_on_wall()):
+		var COLLIDE_ID = "COLLIDE"+str(name.to_int())
+		
+		if(not GM.last_func_time.has(COLLIDE_ID)):
+			GM.last_func_time[COLLIDE_ID]=0
+		elif(GM.game_time-GM.last_func_time[COLLIDE_ID]>=player_collide_gap_duration):
+			GM.last_func_time[COLLIDE_ID] = GM.game_time
+			var normal_vector:Vector2 = get_wall_normal()
+			var ang = (-now_velocity).angle_to(normal_vector)
+			print(normal_vector,now_velocity)
+			now_velocity = (-now_velocity).rotated(2*ang)
+	pass
+
 
 @onready var shooter: Line2D = %Shooter
 
@@ -80,24 +103,32 @@ func _input(event: InputEvent) -> void:
 			mouse_wall_down = false
 			
 	pass
+@export var asking_server_to_create_wall_id:int = -1
+@export var temp_first_pos:Vector2
+@export var this_time_creating_wall_end:bool = false
 
-var wall_temp
+var wall_temp:Wall
+@export var wall_refresh:bool = false
 func confirm_first_point(pos:Vector2):
 	wall_temp = GM.WALL.instantiate()
 	wall_temp.first_point = pos
 	current_scene.add_wall(name.to_int(),wall_temp)
+	if(not GM.as_server):
+		wall_refresh = true
 	pass
 
 var first_point_confirm:bool = false
 func wall_put_down_check() -> void:
 	if(mouse_wall_down and not first_point_confirm):
 		first_point_confirm = true
-		confirm_first_point(get_global_mouse_position())
-		wall_temp.last_point = get_global_mouse_position()
+		temp_first_pos = get_global_mouse_position()
+		confirm_first_point(temp_first_pos)
+		wall_temp.last_point = temp_first_pos
 	if(mouse_wall_down and first_point_confirm):
 		wall_temp.last_point = get_global_mouse_position()
 	if(not mouse_wall_down and first_point_confirm):
 		first_point_confirm = false
+		wall_temp.be_stastic = true
 	pass # Replace with function body.	
 
 func _on_area_2_check_mouse_entered() -> void:
@@ -197,16 +228,11 @@ func a2c_do(area:Area2D):
 				now_velocity = temp - now_velocity
 	
 	pass
-func _on_area_2_check_body_entered(body: Node2D) -> void:
-	if(is_multiplayer_authority() and body is Wall):
-		
-	pass # Replace with function body.
-	
 func _on_area_2_check_area_entered(area: Area2D) -> void:
 	if(is_multiplayer_authority()):
 		a2c_do(area)
-	pass # Replace with function body.
-
+	pass 
+	
 @rpc("authority","call_local")
 func hit_face_do():
 	ani.play("awake")
